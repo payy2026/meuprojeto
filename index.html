@@ -1,37 +1,92 @@
-window.ativar = async function() {
-  try {
-    // 🔥 pega status real do navegador
-    const status = Notification.permission;
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Push OneSignal</title>
 
-    if (status === "granted") {
-      await OneSignal.User.PushSubscription.optIn();
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
-      const id = await OneSignal.User.getOnesignalId();
-      console.log("ID:", id);
+  <script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-      alert("✅ Notificações já estão ativas!");
-      return;
+  OneSignalDeferred.push(async function(OneSignal) {
+
+    await OneSignal.init({
+      appId: "83d10118-e891-4409-9589-c606db190be1",
+      serviceWorkerPath: "OneSignalSDKWorker.js",
+      serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
+    });
+
+    window.ativar = async function() {
+      try {
+        // 🔥 pega status real do navegador
+        const status = Notification.permission;
+
+        if (status === "granted") {
+          await OneSignal.User.PushSubscription.optIn();
+
+          const id = await OneSignal.User.getOnesignalId();
+          console.log("ID:", id);
+
+          alert("✅ Notificações já estão ativas!");
+          return;
+        }
+
+        if (status === "denied") {
+          alert("⚠️ Você bloqueou notificações.\nClique no cadeado 🔒 e permita.");
+          return;
+        }
+
+        // 🔔 pede permissão (igual antes)
+        const res = await Notification.requestPermission();
+
+        if (res === "granted") {
+          await OneSignal.User.PushSubscription.optIn();
+
+          const id = await OneSignal.User.getOnesignalId();
+          console.log("ID:", id);
+
+          alert("✅ Inscrito com sucesso!");
+        }
+
+      } catch (e) {
+        console.error(e);
+        alert("Erro");
+      }
+    };
+
+  });
+  </script>
+
+  <style>
+    body {
+      background:#111;
+      color:white;
+      text-align:center;
+      margin-top:100px;
+      font-family:Arial;
     }
 
-    if (status === "denied") {
-      alert("⚠️ Você bloqueou notificações.\nClique no cadeado 🔒 e permita.");
-      return;
+    button {
+      padding:15px;
+      font-size:16px;
+      background:#007AFF;
+      color:white;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
     }
+  </style>
 
-    // 🔔 aqui sim pede permissão (funciona normal)
-    const res = await Notification.requestPermission();
+</head>
 
-    if (res === "granted") {
-      await OneSignal.User.PushSubscription.optIn();
+<body>
 
-      const id = await OneSignal.User.getOnesignalId();
-      console.log("ID:", id);
+<h2>🔔 Ativar Notificações</h2>
 
-      alert("✅ Inscrito com sucesso!");
-    }
+<button onclick="ativar()">
+Ativar Notificações
+</button>
 
-  } catch (e) {
-    console.error(e);
-    alert("Erro");
-  }
-};
+</body>
+</html>
