@@ -1,17 +1,3 @@
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.init({
-    appId: "060f9161-743f-4c46-acb3-0608ab5850f5",
-  });
+OneSignalDeferred.push(function(OneSignal) {
+  OneSignal.showSlidedownPrompt();
 });
-
-// 🔔 botão corrigido
-function ativarPush() {
-  OneSignalDeferred.push(async function(OneSignal) {
-    const permission = await OneSignal.Notifications.requestPermission();
-    console.log("Permissão:", permission);
-  });
-}
-</script>
