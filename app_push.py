@@ -29,6 +29,6 @@ def fazer_push():
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Git Push", "Push realizado com sucesso!")
+        notificar("Git Push", "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk!")
 
 fazer_push()
