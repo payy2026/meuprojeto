@@ -1,5 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Push Teste</title>
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 <script>
-OneSignalDeferred.push(function(OneSignal) {
-  OneSignal.showSlidedownPrompt();
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function(OneSignal) {
+  console.log("OneSignal carregado");
+
+  await OneSignal.init({
+    appId: "060f9161-743f-4c46-acb3-0608ab5850f5",
+    notifyButton: {
+      enable: true
+    }
+  });
+
+  // 🔥 FORÇA o popup automático
+  setTimeout(() => {
+    OneSignal.Notifications.requestPermission();
+  }, 2000);
 });
 </script>
+
+<style>
+body {
+  background: #111;
+  color: white;
+  text-align: center;
+  margin-top: 100px;
+  font-family: Arial;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🔔 Teste de Notificação</h2>
+<p>O pedido vai aparecer automático...</p>
+
+</body>
+</html>
