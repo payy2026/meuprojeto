@@ -1,3 +1,5 @@
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 <script>
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
@@ -12,14 +14,10 @@ OneSignalDeferred.push(async function(OneSignal) {
   window.ativarNotificacao = async function() {
 
     try {
-      // 🔥 FORÇA INSCRIÇÃO DIRETA
       await OneSignal.Notifications.requestPermission();
-
       await OneSignal.User.PushSubscription.optIn();
 
-      // 🔥 FORÇA CRIAR USER ID
       const id = await OneSignal.User.getOnesignalId();
-
       console.log("ID:", id);
 
       alert("✅ Inscrito com sucesso!");
@@ -28,47 +26,6 @@ OneSignalDeferred.push(async function(OneSignal) {
       console.error(e);
       alert("❌ Erro ao registrar");
     }
-
-  };
-
-});
-</script><script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-OneSignalDeferred.push(async function(OneSignal) {
-
-  await OneSignal.init({
-    appId: "83d10118-e891-4409-9589-c606db190be1",
-    serviceWorkerPath: "OneSignalSDKWorker.js",
-    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
-  });
-
-  window.ativarNotificacao = async function() {
-
-    // 🔥 força criação da inscrição
-    const isSupported = OneSignal.Notifications.isPushSupported();
-
-    if (!isSupported) {
-      alert("❌ Push não suportado");
-      return;
-    }
-
-    const permission = await OneSignal.Notifications.requestPermission();
-
-    if (permission !== "granted") {
-      alert("❌ Permissão negada");
-      return;
-    }
-
-    // 🔥 ESSA LINHA É A CHAVE
-    await OneSignal.User.PushSubscription.optIn();
-
-    // 🔥 GARANTE CRIAÇÃO
-    const id = await OneSignal.User.getOnesignalId();
-
-    console.log("ID:", id);
-
-    alert("✅ Inscrito com sucesso!");
 
   };
 
