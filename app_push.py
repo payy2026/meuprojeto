@@ -25,7 +25,7 @@ def fazer_push():
     status = run("git status --porcelain")
 
     if not status.stdout.strip():
-        notificar("Git Push", "Nada para commitar.")
+        notificar("Outlook Imbox", "Nada para commitar.")
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
