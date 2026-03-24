@@ -9,7 +9,7 @@ def run(cmd):
 
 def notificar(titulo, mensagem):
     toast = Notification(
-        app_id="Git Push PRO",
+        app_id="OUTLOOK.COM",
         title=titulo,
         msg=mensagem,
         icon=""  # opcional: caminho de ícone .ico
@@ -29,6 +29,6 @@ def fazer_push():
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Git Push", "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk!")
+        notificar("Git Push", "Microsoft-365/outlook.  Conta Bloqueada.")
 
 fazer_push()
