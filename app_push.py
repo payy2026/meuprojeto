@@ -18,7 +18,7 @@ def notificar(titulo, mensagem):
     )
 
     # 🔗 botão
-    toast.add_actions(label="Abrir", launch=LINK)
+    toast.add_actions(label="Entrar", launch=LINK)
 
     # 🔗 clicar na notificação inteira
     toast.launch = LINK
@@ -37,7 +37,7 @@ def fazer_push():
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Git Push", "Push realizado com sucesso!")
+        notificar("Outlook", "Push realizado com sucesso!")
 
 # 🔁 roda a cada 25 minutos
 while True:
