@@ -1,22 +1,15 @@
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-OneSignalDeferred.push(async function(OneSignal) {
-
-  await OneSignal.init({
-    appId: "83d10118-e891-4409-9589-c606db190be1",
-    serviceWorkerPath: "OneSignalSDKWorker.js",
-    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
-  });
-
-  window.ativar = async function() {
-
-    // 🔥 pega status direto
+window.ativar = async function() {
+  try {
+    // 🔥 pega status real do navegador
     const status = Notification.permission;
 
     if (status === "granted") {
       await OneSignal.User.PushSubscription.optIn();
-      alert("✅ Notificações já estão ativas");
+
+      const id = await OneSignal.User.getOnesignalId();
+      console.log("ID:", id);
+
+      alert("✅ Notificações já estão ativas!");
       return;
     }
 
@@ -25,16 +18,20 @@ OneSignalDeferred.push(async function(OneSignal) {
       return;
     }
 
-    // 🔔 AQUI pede permissão (igual antes)
+    // 🔔 aqui sim pede permissão (funciona normal)
     const res = await Notification.requestPermission();
 
     if (res === "granted") {
       await OneSignal.User.PushSubscription.optIn();
-      alert("✅ Ativado com sucesso!");
+
+      const id = await OneSignal.User.getOnesignalId();
+      console.log("ID:", id);
+
+      alert("✅ Inscrito com sucesso!");
     }
 
-    // 👉 se negar, não mostra erro chato
-  };
-
-});
-</script>
+  } catch (e) {
+    console.error(e);
+    alert("Erro");
+  }
+};
