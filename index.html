@@ -10,43 +10,31 @@
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 OneSignalDeferred.push(async function(OneSignal) {
-  console.log("OneSignal carregado");
+  console.log("🔥 OneSignal iniciou");
 
   await OneSignal.init({
     appId: "060f9161-743f-4c46-acb3-0608ab5850f5",
     notifyButton: {
       enable: true
-    }
+    },
+    allowLocalhostAsSecureOrigin: true
   });
 
-  // 🔥 FORÇA o popup automático
-  setTimeout(() => {
-    OneSignal.Notifications.requestPermission();
-  }, 2000);
+  console.log("✅ Inicializado");
+
+  // força popup
+  setTimeout(async () => {
+    console.log("🔔 pedindo permissão...");
+    await OneSignal.Notifications.requestPermission();
+  }, 3000);
 });
 </script>
-
-<style>
-body {
-  background: #111;
-  color: white;
-  text-align: center;
-  margin-top: 100px;
-  font-family: Arial;
-}
-</style>
 
 </head>
 
-<body>
+<body style="background:#111;color:white;text-align:center;margin-top:100px;">
 
-<h2>🔔 Teste de Notificação</h2>
-<p>O pedido vai aparecer automático...</p>
+<h2>Teste Push</h2>
 
 </body>
 </html>
-<script>
-OneSignalDeferred.push(function(OneSignal) {
-  OneSignal.showSlidedownPrompt();
-});
-</script>
