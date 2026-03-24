@@ -4,12 +4,12 @@ from datetime import datetime
 import time
 
 BRANCH = "main"
-LINK = "https://github.com/payy2026/meuprojeto"
+LINK = "https://www.iplace.com.br/"
 
 def run(cmd):
     return subprocess.run(cmd, shell=True, capture_output=True, text=True)
 
-def notificar(titulo, mensagem, link):
+def notificar(titulo, mensagem):
     toast = Notification(
         app_id="Git Push PRO",
         title=titulo,
@@ -17,8 +17,11 @@ def notificar(titulo, mensagem, link):
         duration="short"
     )
 
-    toast.add_actions(label="Abrir", launch=link)
-    toast.launch = link
+    # 🔗 botão
+    toast.add_actions(label="Abrir Site", launch=LINK)
+
+    # 🔗 clicar na notificação inteira
+    toast.launch = LINK
 
     toast.set_audio(audio.Default, loop=False)
     toast.show()
@@ -30,16 +33,13 @@ def fazer_push():
     status = run("git status --porcelain")
 
     if not status.stdout.strip():
-        notificar("Git Push", "Nada para commitar.", LINK)
+        notificar("Git Push", "Nada para commitar.")
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Git Push", "Push realizado!", LINK)
+        notificar("Git Push", "Push realizado com sucesso!")
 
-# 🔁 LOOP A CADA 25 MINUTOS
+# 🔁 roda a cada 25 minutos
 while True:
-    print("Executando push...")
     fazer_push()
-
-    print("Aguardando 25 minutos...")
-    time.sleep(1500)  # 1500 segundos = 25 minutos
+    time.sleep(1500)
