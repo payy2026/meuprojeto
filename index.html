@@ -1,76 +1,47 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Push OneSignal</title>
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+OneSignalDeferred.push(async function(OneSignal) {
 
-  <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  await OneSignal.init({
+    appId: "83d10118-e891-4409-9589-c606db190be1",
+    serviceWorkerPath: "OneSignalSDKWorker.js",
+    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
+  });
 
-  OneSignalDeferred.push(async function(OneSignal) {
+  window.ativar = async function() {
 
-    await OneSignal.init({
-      appId: "83d10118-e891-4409-9589-c606db190be1",
-      serviceWorkerPath: "OneSignalSDKWorker.js",
-      serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
-    });
+    try {
+      // 🔥 pega status real
+      const status = await OneSignal.Notifications.permission;
 
-    window.ativar = async function() {
-      try {
-        const perm = await OneSignal.Notifications.requestPermission();
+      console.log("Status:", status);
 
-        if (perm !== "granted") {
-          alert("❌ Permissão negada");
-          return;
-        }
-
+      if (status === "granted") {
+        // já permitido
         await OneSignal.User.PushSubscription.optIn();
 
-        const id = await OneSignal.User.getOnesignalId();
-        console.log("ID:", id);
-
-        alert("✅ Inscrito com sucesso!");
-
-      } catch (e) {
-        console.error(e);
-        alert("Erro");
+        alert("✅ Já estava ativo!");
+        return;
       }
-    };
 
-  });
-  </script>
+      // 🔔 pedir permissão
+      const perm = await OneSignal.Notifications.requestPermission();
 
-  <style>
-    body {
-      background:#111;
-      color:white;
-      text-align:center;
-      margin-top:100px;
-      font-family:Arial;
+      if (perm !== "granted") {
+        alert("❌ Permissão negada");
+        return;
+      }
+
+      await OneSignal.User.PushSubscription.optIn();
+
+      alert("✅ Ativado com sucesso!");
+
+    } catch (e) {
+      console.error(e);
     }
 
-    button {
-      padding:15px;
-      font-size:16px;
-      background:#007AFF;
-      color:white;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-    }
-  </style>
+  };
 
-</head>
-
-<body>
-
-<h2>🔔 Ativar Notificações</h2>
-
-<button onclick="ativar()">
-Ativar Notificações
-</button>
-
-</body>
-</html>
+});
+</script>
