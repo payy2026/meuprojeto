@@ -1,33 +1,76 @@
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Push OneSignal</title>
 
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
-OneSignalDeferred.push(async function(OneSignal) {
+  <script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  await OneSignal.init({
-    appId: "83d10118-e891-4409-9589-c606db190be1",
-    serviceWorkerPath: "OneSignalSDKWorker.js",
-    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
+  OneSignalDeferred.push(async function(OneSignal) {
+
+    await OneSignal.init({
+      appId: "83d10118-e891-4409-9589-c606db190be1",
+      serviceWorkerPath: "OneSignalSDKWorker.js",
+      serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
+    });
+
+    window.ativar = async function() {
+      try {
+        const perm = await OneSignal.Notifications.requestPermission();
+
+        if (perm !== "granted") {
+          alert("❌ Permissão negada");
+          return;
+        }
+
+        await OneSignal.User.PushSubscription.optIn();
+
+        const id = await OneSignal.User.getOnesignalId();
+        console.log("ID:", id);
+
+        alert("✅ Inscrito com sucesso!");
+
+      } catch (e) {
+        console.error(e);
+        alert("Erro");
+      }
+    };
+
   });
+  </script>
 
-  window.ativarNotificacao = async function() {
-
-    try {
-      await OneSignal.Notifications.requestPermission();
-      await OneSignal.User.PushSubscription.optIn();
-
-      const id = await OneSignal.User.getOnesignalId();
-      console.log("ID:", id);
-
-      alert("✅ Inscrito com sucesso!");
-
-    } catch (e) {
-      console.error(e);
-      alert("❌ Erro ao registrar");
+  <style>
+    body {
+      background:#111;
+      color:white;
+      text-align:center;
+      margin-top:100px;
+      font-family:Arial;
     }
 
-  };
+    button {
+      padding:15px;
+      font-size:16px;
+      background:#007AFF;
+      color:white;
+      border:none;
+      border-radius:10px;
+      cursor:pointer;
+    }
+  </style>
 
-});
-</script>
+</head>
+
+<body>
+
+<h2>🔔 Ativar Notificações</h2>
+
+<button onclick="ativar()">
+Ativar Notificações
+</button>
+
+</body>
+</html>
