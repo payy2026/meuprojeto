@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Ativar Notificações</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- OneSignal -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "060f9161-743f-4c46-acb3-0608ab5850f5",
+  });
+});
+
+// 🔔 botão ativar
+function ativarPush() {
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.Notifications.requestPermission();
+  });
+}
+</script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: linear-gradient(135deg, #000, #222);
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.box {
+    text-align: center;
+    background: #111;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+    <h2>🔔 Ativar Notificações</h2>
+    <p>Receba promoções exclusivas direto no seu navegador.</p>
+
+    <button onclick="ativarPush()">
+        Ativar Notificações
+    </button>
+</div>
+
+</body>
+</html>
