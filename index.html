@@ -1,13 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Push</title>
+<title>Ativar Notificações</title>
 
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 <script>
 window.OneSignalDeferred = window.OneSignalDeferred || [];
+
 OneSignalDeferred.push(async function(OneSignal) {
   await OneSignal.init({
     appId: "060f9161-743f-4c46-acb3-0608ab5850f5",
@@ -20,9 +21,31 @@ function ativarPush() {
   });
 }
 </script>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: #111;
+    color: white;
+    text-align: center;
+    margin-top: 100px;
+}
+
+button {
+    padding: 12px 20px;
+    background: #007AFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+</style>
+
 </head>
 
-<body style="text-align:center; margin-top:100px; font-family:Arial;">
+<body>
 
 <h2>🔔 Ativar notificações</h2>
 
