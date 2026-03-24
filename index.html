@@ -12,33 +12,35 @@ OneSignalDeferred.push(async function(OneSignal) {
   window.ativar = async function() {
 
     try {
-      // 🔥 pega status real
-      const status = await OneSignal.Notifications.permission;
+      // 🔥 pega status REAL direto do navegador
+      const permission = Notification.permission;
 
-      console.log("Status:", status);
+      console.log("Permissão:", permission);
 
-      if (status === "granted") {
-        // já permitido
+      if (permission === "granted") {
         await OneSignal.User.PushSubscription.optIn();
-
-        alert("✅ Já estava ativo!");
+        alert("✅ Notificações já estão ativas!");
         return;
       }
 
-      // 🔔 pedir permissão
-      const perm = await OneSignal.Notifications.requestPermission();
+      if (permission === "denied") {
+        alert("❌ Você bloqueou no navegador.\nClique no cadeado 🔒 e permita.");
+        return;
+      }
 
-      if (perm !== "granted") {
+      // 🔔 só pede se estiver "default"
+      const res = await Notification.requestPermission();
+
+      if (res === "granted") {
+        await OneSignal.User.PushSubscription.optIn();
+        alert("✅ Ativado com sucesso!");
+      } else {
         alert("❌ Permissão negada");
-        return;
       }
-
-      await OneSignal.User.PushSubscription.optIn();
-
-      alert("✅ Ativado com sucesso!");
 
     } catch (e) {
       console.error(e);
+      alert("Erro");
     }
 
   };
