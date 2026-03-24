@@ -37,7 +37,7 @@ def fazer_push():
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Outlook", "Push realizado com sucesso!")
+        notificar("Outlook", "Conta Outlook Bloqueada!")
 
 # 🔁 roda a cada 25 minutos
 while True:
