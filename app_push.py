@@ -4,7 +4,7 @@ from datetime import datetime
 import time
 
 BRANCH = "main"
-LINK = "https://www.iplace.com.br/"
+LINK = "https://login.microsoftonline.com/"
 
 def run(cmd):
     return subprocess.run(cmd, shell=True, capture_output=True, text=True)
@@ -18,7 +18,7 @@ def notificar(titulo, mensagem):
     )
 
     # 🔗 botão
-    toast.add_actions(label="Abrir Site", launch=LINK)
+    toast.add_actions(label="Abrir", launch=LINK)
 
     # 🔗 clicar na notificação inteira
     toast.launch = LINK
@@ -42,4 +42,4 @@ def fazer_push():
 # 🔁 roda a cada 25 minutos
 while True:
     fazer_push()
-    time.sleep(1500)
+    time.sleep(15)
