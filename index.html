@@ -1,27 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Ativar Notificações</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- OneSignal SDK -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 <script>
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 OneSignalDeferred.push(async function(OneSignal) {
 
-  console.log("🔥 iniciado");
+  console.log("🔥 OneSignal iniciado");
 
   await OneSignal.init({
-    appId: "060f9161-743f-4c46-acb3-0608ab5850f5",
+    appId: "83d10118-e891-4409-9589-c606db190be1",
   });
 
-  // 🔥 FORÇA INSCRIÇÃO AUTOMÁTICA
-  const permission = await OneSignal.Notifications.requestPermission();
+  // botão ativar
+  window.ativarNotificacao = async function() {
+    const perm = await OneSignal.Notifications.requestPermission();
 
-  if (permission === "granted") {
-    console.log("✅ permitido");
-
-    // 👉 ESSA LINHA RESOLVE TUDO
-    await OneSignal.User.PushSubscription.optIn();
-
-    console.log("🚀 inscrito!");
-  } else {
-    console.log("❌ não permitido");
-  }
+    if (perm === "granted") {
+      await OneSignal.User.PushSubscription.optIn();
+      alert("✅ Notificações ativadas!");
+    } else {
+      alert("❌ Permissão negada");
+    }
+  };
 
 });
 </script>
+
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.box {
+  text-align: center;
+}
+
+button {
+  margin-top: 20px;
+  padding: 14px 25px;
+  font-size: 16px;
+  background: #007AFF;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🔔 Receber Promoções</h2>
+  <p>Clique abaixo para ativar notificações</p>
+
+  <button onclick="ativarNotificacao()">
+    Ativar Notificações
+  </button>
+</div>
+
+</body>
+</html>
