@@ -1,80 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Ativar Notificações</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- OneSignal SDK -->
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
 <script>
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 OneSignalDeferred.push(async function(OneSignal) {
 
-  console.log("🔥 OneSignal iniciado");
-
   await OneSignal.init({
     appId: "83d10118-e891-4409-9589-c606db190be1",
   });
 
-  // botão ativar
   window.ativarNotificacao = async function() {
-    const perm = await OneSignal.Notifications.requestPermission();
+
+    const perm = await OneSignal.Notifications.permission;
+
+    console.log("Permissão atual:", perm);
 
     if (perm === "granted") {
+      // 🔥 JÁ TEM PERMISSÃO → só inscreve
       await OneSignal.User.PushSubscription.optIn();
-      alert("✅ Notificações ativadas!");
+      alert("✅ Inscrito com sucesso!");
     } else {
-      alert("❌ Permissão negada");
+      // 🔔 ainda não permitido
+      const result = await OneSignal.Notifications.requestPermission();
+
+      if (result === "granted") {
+        await OneSignal.User.PushSubscription.optIn();
+        alert("✅ Agora ativado!");
+      } else {
+        alert("❌ Permissão negada");
+      }
     }
+
   };
 
 });
 </script>
-
-<style>
-body {
-  margin: 0;
-  background: #111;
-  color: white;
-  font-family: Arial;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.box {
-  text-align: center;
-}
-
-button {
-  margin-top: 20px;
-  padding: 14px 25px;
-  font-size: 16px;
-  background: #007AFF;
-  color: white;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-</style>
-
-</head>
-
-<body>
-
-<div class="box">
-  <h2>🔔 Receber Promoções</h2>
-  <p>Clique abaixo para ativar notificações</p>
-
-  <button onclick="ativarNotificacao()">
-    Ativar Notificações
-  </button>
-</div>
-
-</body>
-</html>
