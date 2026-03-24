@@ -2,9 +2,85 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Push OneSignal</title>
+  <title>Ativar Notificações</title>
 
+  <!-- OneSignal -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+    }
+
+    .card {
+      background: #111827;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      max-width: 400px;
+      width: 90%;
+    }
+
+    .card h1 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 14px;
+      color: #9ca3af;
+      margin-bottom: 30px;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      border: none;
+      padding: 15px 25px;
+      border-radius: 12px;
+      font-size: 16px;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+      width: 100%;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #16a34a, #15803d);
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 13px;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>🔔 Ative as Notificações</h1>
+    <p>Receba novidades, avisos e atualizações direto no seu navegador.</p>
+
+    <button class="btn" onclick="ativar()">
+      Ativar Agora
+    </button>
+
+    <div class="status" id="status"></div>
+  </div>
 
   <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -18,75 +94,42 @@
     });
 
     window.ativar = async function() {
+
+      const statusDiv = document.getElementById("status");
+
       try {
-        // 🔥 pega status real do navegador
+
         const status = Notification.permission;
 
         if (status === "granted") {
           await OneSignal.User.PushSubscription.optIn();
-
-          const id = await OneSignal.User.getOnesignalId();
-          console.log("ID:", id);
-
-          alert("✅ Notificações já estão ativas!");
+          statusDiv.innerText = "✅ Notificações já estão ativas";
           return;
         }
 
         if (status === "denied") {
-          alert("⚠️ Você bloqueou notificações.\nClique no cadeado 🔒 e permita.");
+          statusDiv.innerText = "⚠️ Você bloqueou. Clique no cadeado do navegador.";
           return;
         }
 
-        // 🔔 pede permissão (igual antes)
         const res = await Notification.requestPermission();
 
         if (res === "granted") {
           await OneSignal.User.PushSubscription.optIn();
-
-          const id = await OneSignal.User.getOnesignalId();
-          console.log("ID:", id);
-
-          alert("✅ Inscrito com sucesso!");
+          statusDiv.innerText = "✅ Ativado com sucesso!";
+        } else {
+          statusDiv.innerText = "❌ Permissão negada";
         }
 
       } catch (e) {
         console.error(e);
-        alert("Erro");
+        statusDiv.innerText = "❌ Erro ao ativar";
       }
+
     };
 
   });
   </script>
-
-  <style>
-    body {
-      background:#111;
-      color:white;
-      text-align:center;
-      margin-top:100px;
-      font-family:Arial;
-    }
-
-    button {
-      padding:15px;
-      font-size:16px;
-      background:#007AFF;
-      color:white;
-      border:none;
-      border-radius:10px;
-      cursor:pointer;
-    }
-  </style>
-
-</head>
-
-<body>
-
-<h2>🔔 Ativar Notificações</h2>
-
-<button onclick="ativar()">
-Ativar Notificações
-</button>
 
 </body>
 </html>
