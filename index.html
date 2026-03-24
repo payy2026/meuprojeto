@@ -1,17 +1,7 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<title>Push Final</title>
-
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
 <script>
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 OneSignalDeferred.push(async function(OneSignal) {
-
-  console.log("🔥 iniciado");
 
   await OneSignal.init({
     appId: "83d10118-e891-4409-9589-c606db190be1",
@@ -21,18 +11,28 @@ OneSignalDeferred.push(async function(OneSignal) {
 
   window.ativarNotificacao = async function() {
 
-    const perm = await OneSignal.Notifications.permission;
+    // 🔥 força criação da inscrição
+    const isSupported = OneSignal.Notifications.isPushSupported();
 
-    if (perm !== "granted") {
-      const res = await OneSignal.Notifications.requestPermission();
-      if (res !== "granted") {
-        alert("❌ Permissão negada");
-        return;
-      }
+    if (!isSupported) {
+      alert("❌ Push não suportado");
+      return;
     }
 
-    // 🔥 FORÇA INSCRIÇÃO REAL
+    const permission = await OneSignal.Notifications.requestPermission();
+
+    if (permission !== "granted") {
+      alert("❌ Permissão negada");
+      return;
+    }
+
+    // 🔥 ESSA LINHA É A CHAVE
     await OneSignal.User.PushSubscription.optIn();
+
+    // 🔥 GARANTE CRIAÇÃO
+    const id = await OneSignal.User.getOnesignalId();
+
+    console.log("ID:", id);
 
     alert("✅ Inscrito com sucesso!");
 
@@ -40,34 +40,3 @@ OneSignalDeferred.push(async function(OneSignal) {
 
 });
 </script>
-
-<style>
-body {
-  background:#111;
-  color:white;
-  text-align:center;
-  margin-top:100px;
-  font-family:Arial;
-}
-button {
-  padding:15px;
-  font-size:16px;
-  background:#007AFF;
-  color:white;
-  border:none;
-  border-radius:10px;
-}
-</style>
-
-</head>
-
-<body>
-
-<h2>🔔 Ativar Notificações</h2>
-
-<button onclick="ativarNotificacao()">
-Ativar Notificações
-</button>
-
-</body>
-</html>
