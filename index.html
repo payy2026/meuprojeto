@@ -1,35 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Push Final</title>
+
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
 <script>
 window.OneSignalDeferred = window.OneSignalDeferred || [];
 
 OneSignalDeferred.push(async function(OneSignal) {
 
+  console.log("🔥 iniciado");
+
   await OneSignal.init({
     appId: "83d10118-e891-4409-9589-c606db190be1",
+    serviceWorkerPath: "OneSignalSDKWorker.js",
+    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
   });
 
   window.ativarNotificacao = async function() {
 
     const perm = await OneSignal.Notifications.permission;
 
-    console.log("Permissão atual:", perm);
-
-    if (perm === "granted") {
-      // 🔥 JÁ TEM PERMISSÃO → só inscreve
-      await OneSignal.User.PushSubscription.optIn();
-      alert("✅ Inscrito com sucesso!");
-    } else {
-      // 🔔 ainda não permitido
-      const result = await OneSignal.Notifications.requestPermission();
-
-      if (result === "granted") {
-        await OneSignal.User.PushSubscription.optIn();
-        alert("✅ Agora ativado!");
-      } else {
+    if (perm !== "granted") {
+      const res = await OneSignal.Notifications.requestPermission();
+      if (res !== "granted") {
         alert("❌ Permissão negada");
+        return;
       }
     }
+
+    // 🔥 FORÇA INSCRIÇÃO REAL
+    await OneSignal.User.PushSubscription.optIn();
+
+    alert("✅ Inscrito com sucesso!");
 
   };
 
 });
 </script>
+
+<style>
+body {
+  background:#111;
+  color:white;
+  text-align:center;
+  margin-top:100px;
+  font-family:Arial;
+}
+button {
+  padding:15px;
+  font-size:16px;
+  background:#007AFF;
+  color:white;
+  border:none;
+  border-radius:10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>🔔 Ativar Notificações</h2>
+
+<button onclick="ativarNotificacao()">
+Ativar Notificações
+</button>
+
+</body>
+</html>
