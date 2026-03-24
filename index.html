@@ -10,14 +10,30 @@ OneSignalDeferred.push(async function(OneSignal) {
   });
 
   window.ativar = async function() {
-    try {
+
+    // 🔥 pega status direto
+    const status = Notification.permission;
+
+    if (status === "granted") {
       await OneSignal.User.PushSubscription.optIn();
-
-      alert("✅ Notificações ativadas!");
-
-    } catch (e) {
-      console.error(e);
+      alert("✅ Notificações já estão ativas");
+      return;
     }
+
+    if (status === "denied") {
+      alert("⚠️ Você bloqueou notificações.\nClique no cadeado 🔒 e permita.");
+      return;
+    }
+
+    // 🔔 AQUI pede permissão (igual antes)
+    const res = await Notification.requestPermission();
+
+    if (res === "granted") {
+      await OneSignal.User.PushSubscription.optIn();
+      alert("✅ Ativado com sucesso!");
+    }
+
+    // 👉 se negar, não mostra erro chato
   };
 
 });
