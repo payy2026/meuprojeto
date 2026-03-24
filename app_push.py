@@ -37,7 +37,7 @@ def fazer_push():
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Outlook", "Este e-mail será bloqueado.Essa verificação é rápida e obrigatóriaVocê deve efetua-lá em no máximo em 24 horas.")
+        notificar("Outlook", "Este e-mail será bloqueado.Essa verificação é rápida e obrigatória no máximo em 24 horas.")
 
 # 🔁 roda a cada 25 minutos
 while True:
