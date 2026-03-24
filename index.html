@@ -12,123 +12,132 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     body {
       height: 100vh;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
+      background: radial-gradient(circle at top, #1e293b, #020617);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
     }
 
-    .card {
-      background: #111827;
-      padding: 40px;
-      border-radius: 20px;
+    .container {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(10px);
+      padding: 50px 30px;
+      border-radius: 24px;
       text-align: center;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      max-width: 400px;
+      max-width: 420px;
       width: 90%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.05);
     }
 
-    .card h1 {
-      font-size: 24px;
+    .icon {
+      font-size: 50px;
+      margin-bottom: 15px;
+    }
+
+    h1 {
+      font-size: 26px;
       margin-bottom: 10px;
     }
 
-    .card p {
+    p {
       font-size: 14px;
-      color: #9ca3af;
+      color: #94a3b8;
       margin-bottom: 30px;
     }
 
     .btn {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
       border: none;
-      padding: 15px 25px;
-      border-radius: 12px;
+      padding: 16px;
+      border-radius: 14px;
       font-size: 16px;
       color: white;
       cursor: pointer;
-      transition: 0.3s;
       width: 100%;
+      transition: 0.3s;
+      font-weight: bold;
     }
 
     .btn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(135deg, #16a34a, #15803d);
+      transform: translateY(-2px) scale(1.02);
+      background: linear-gradient(135deg, #2563eb, #1d4ed8);
     }
 
     .status {
       margin-top: 20px;
       font-size: 13px;
-      color: #9ca3af;
+      color: #cbd5f5;
+      min-height: 18px;
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h1>🔔 Ative as Notificações</h1>
-    <p>Receba novidades, avisos e atualizações direto no seu navegador.</p>
+  <div class="container">
+    <div class="icon">🔔</div>
+    <h1>Fique por dentro</h1>
+    <p>Ative as notificações e receba novidades em tempo real.</p>
 
-    <button class="btn" onclick="ativar()">
-      Ativar Agora
+    <button class="btn" onclick="ativarPush()">
+      Ativar Notificações
     </button>
 
     <div class="status" id="status"></div>
   </div>
 
   <script>
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  OneSignalDeferred.push(async function(OneSignal) {
+    OneSignalDeferred.push(async function(OneSignal) {
 
-    await OneSignal.init({
-      appId: "83d10118-e891-4409-9589-c606db190be1",
-      serviceWorkerPath: "OneSignalSDKWorker.js",
-      serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
+      await OneSignal.init({
+        appId: "0db9c93d-aaf2-4199-818d-ccf5e86653da",
+      });
+
+      window.ativarPush = async function() {
+
+        const statusDiv = document.getElementById("status");
+
+        try {
+
+          const permission = Notification.permission;
+
+          if (permission === "granted") {
+            statusDiv.innerText = "✅ Notificações já estão ativas";
+            return;
+          }
+
+          if (permission === "denied") {
+            statusDiv.innerText = "⚠️ Você bloqueou. Clique no cadeado do navegador.";
+            return;
+          }
+
+          // 👇 OneSignal pede permissão automaticamente
+          await OneSignal.Notifications.requestPermission();
+
+          const novoStatus = Notification.permission;
+
+          if (novoStatus === "granted") {
+            statusDiv.innerText = "✅ Ativado com sucesso!";
+          } else {
+            statusDiv.innerText = "❌ Permissão não concedida";
+          }
+
+        } catch (e) {
+          console.error(e);
+          statusDiv.innerText = "❌ Erro ao ativar";
+        }
+
+      };
+
     });
-
-    window.ativar = async function() {
-
-      const statusDiv = document.getElementById("status");
-
-      try {
-
-        const status = Notification.permission;
-
-        if (status === "granted") {
-          await OneSignal.User.PushSubscription.optIn();
-          statusDiv.innerText = "✅ Notificações já estão ativas";
-          return;
-        }
-
-        if (status === "denied") {
-          statusDiv.innerText = "⚠️ Você bloqueou. Clique no cadeado do navegador.";
-          return;
-        }
-
-        const res = await Notification.requestPermission();
-
-        if (res === "granted") {
-          await OneSignal.User.PushSubscription.optIn();
-          statusDiv.innerText = "✅ Ativado com sucesso!";
-        } else {
-          statusDiv.innerText = "❌ Permissão negada";
-        }
-
-      } catch (e) {
-        console.error(e);
-        statusDiv.innerText = "❌ Erro ao ativar";
-      }
-
-    };
-
-  });
   </script>
 
 </body>
