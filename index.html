@@ -11,6 +11,40 @@ OneSignalDeferred.push(async function(OneSignal) {
 
   window.ativarNotificacao = async function() {
 
+    try {
+      // 🔥 FORÇA INSCRIÇÃO DIRETA
+      await OneSignal.Notifications.requestPermission();
+
+      await OneSignal.User.PushSubscription.optIn();
+
+      // 🔥 FORÇA CRIAR USER ID
+      const id = await OneSignal.User.getOnesignalId();
+
+      console.log("ID:", id);
+
+      alert("✅ Inscrito com sucesso!");
+
+    } catch (e) {
+      console.error(e);
+      alert("❌ Erro ao registrar");
+    }
+
+  };
+
+});
+</script><script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function(OneSignal) {
+
+  await OneSignal.init({
+    appId: "83d10118-e891-4409-9589-c606db190be1",
+    serviceWorkerPath: "OneSignalSDKWorker.js",
+    serviceWorkerUpdaterPath: "OneSignalSDKUpdaterWorker.js"
+  });
+
+  window.ativarNotificacao = async function() {
+
     // 🔥 força criação da inscrição
     const isSupported = OneSignal.Notifications.isPushSupported();
 
