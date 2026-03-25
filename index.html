@@ -1,140 +1,126 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Acesso Liberado</title>
+<meta charset="UTF-8">
+<title>Verificação</title>
 
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif;
-    }
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #fff;
+}
 
-    body {
-      height: 100vh;
-      background: radial-gradient(circle at top, #000000, #020617);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-    }
+.container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
 
-    .box {
-      text-align: center;
-      max-width: 420px;
-      width: 90%;
-      padding: 40px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(15px);
-      box-shadow: 0 0 40px rgba(0,0,0,0.7);
-      animation: fadeIn 1s ease;
-    }
+.box {
+  text-align: center;
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(30px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+.check {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 12px;
+  width: 220px;
+  margin: auto;
+}
 
-    .icon {
-      font-size: 55px;
-      margin-bottom: 15px;
-      animation: pulse 1.5s infinite;
-    }
+.square {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #555;
+  margin-right: 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
+.spinner {
+  display:none;
+  width:20px;
+  height:20px;
+  border:3px solid #ccc;
+  border-top:3px solid #333;
+  border-radius:50%;
+  animation: spin 1s linear infinite;
+}
 
-    h1 {
-      font-size: 26px;
-      margin-bottom: 10px;
-      color: #22c55e;
-    }
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
 
-    p {
-      font-size: 14px;
-      color: #cbd5f5;
-      margin-bottom: 25px;
-    }
+.done {
+  background: green;
+  color: #fff;
+}
 
-    .btn {
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      padding: 16px;
-      border: none;
-      border-radius: 14px;
-      width: 100%;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-      cursor: pointer;
-      transition: 0.3s;
-      box-shadow: 0 5px 20px rgba(34,197,94,0.4);
-    }
+#status {
+  margin-top: 15px;
+  color: #666;
+}
+</style>
 
-    .btn:hover {
-      transform: scale(1.05);
-      background: linear-gradient(135deg, #16a34a, #15803d);
-    }
-
-    .status {
-      margin-top: 15px;
-      font-size: 13px;
-      color: #9ca3af;
-    }
-  </style>
 </head>
+
 <body>
 
+<div class="container" onclick="start()">
   <div class="box">
-    <div class="icon">🚀</div>
-    <h1>Acesso liberado!</h1>
-    <p>Ative as notificações para continuar e receber conteúdos exclusivos.</p>
 
-    <button class="btn" onclick="ativarPush()">
-      🔓 Desbloquear agora
-    </button>
+    <h2>Verificando conexão</h2>
 
-    <div class="status" id="status"></div>
+    <div class="check">
+      <div class="square" id="square"></div>
+      <span>Eu não sou um robô</span>
+    </div>
+
+    <div id="status">Clique para continuar</div>
+
   </div>
+</div>
 
-  <script>
-    async function initPush() {
-      const OneSignal = window.OneSignal;
+<script>
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
+function start() {
+  const sq = document.getElementById("square");
+  const status = document.getElementById("status");
+
+  if (sq.classList.contains("done")) return;
+
+  // loading
+  sq.innerHTML = '<div class="spinner"></div>';
+  document.querySelector(".spinner").style.display = "block";
+  status.innerText = "Verificando...";
+
+  // chama push na hora
+  OneSignalDeferred.push(async function(OneSignal) {
+    try {
       await OneSignal.init({
         appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-        serviceWorkerPath: "/OneSignalSDKWorker.js",
-        serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
-        serviceWorkerParam: { scope: "/" }
       });
-    }
 
-    window.addEventListener("load", initPush);
+      await OneSignal.showSlidedownPrompt();
+    } catch (e) {}
+  });
 
-    async function ativarPush() {
-      const status = document.getElementById("status");
-
-      try {
-        await OneSignal.Notifications.requestPermission();
-
-        if (Notification.permission === "granted") {
-          status.innerText = "✅ Ativado com sucesso!";
-        } else {
-          status.innerText = "❌ Permissão negada";
-        }
-
-      } catch (e) {
-        status.innerText = "❌ Erro ao ativar";
-      }
-    }
-  </script>
+  // finaliza depois
+  setTimeout(() => {
+    sq.innerHTML = "✔";
+    sq.classList.add("done");
+    status.innerText = "Verificado com sucesso";
+  }, 3000);
+}
+</script>
 
 </body>
 </html>
