@@ -1,49 +1,20 @@
-<!DOCTYPE html>
+html<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <title>Notificações Push</title>
 
   <!-- OneSignal SDK -->
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-  <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-    OneSignalDeferred.push(async function(OneSignal) {
-
-      // 1. Inicializar
-      await OneSignal.init({
-        appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-      });
-
-      // 2. Pedir permissão ao usuário
-      await OneSignal.Slidedown.promptPush();
-
-      // 3. Verificar se está inscrito
-      const isSubscribed = await OneSignal.User.PushSubscription.optedIn;
-      console.log("Inscrito:", isSubscribed);
-
-      // 4. Pegar o ID do usuário (para enviar notificação individual)
-      const userId = await OneSignal.User.PushSubscription.id;
-      console.log("Player ID:", userId);
-
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
     });
-  </script>
-</head>
-<body>
+  });
+</script>
 
-  <h1>Minha Aplicação</h1>
 
-  <!-- Botão para pedir permissão manualmente -->
-  <button onclick="ativarNotificacoes()">🔔 Ativar Notificações</button>
-
-  <script>
-    function ativarNotificacoes() {
-      OneSignalDeferred.push(function(OneSignal) {
-        OneSignal.Slidedown.promptPush();
-      });
-    }
-  </script>
-
-</body>
-</html>
+<h1>Minha Aplicação</h1>
