@@ -2,75 +2,84 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Verificação</title>
+<title>Ativar Notificações</title>
 
 <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f1f1f1;
-}
-
-.container {
-  height: 100vh;
+  font-family: Arial;
+  background: #0f172a;
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.card {
-  background: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  width: 320px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-}
-
-.check {
-  display: flex;
-  align-items: center;
-  border: 1px solid #ccc;
-  padding: 12px;
-  border-radius: 5px;
-  cursor: pointer;
+  height: 100vh;
 }
 
 .box {
-  width: 22px;
-  height: 22px;
-  border: 2px solid #555;
-  margin-right: 10px;
+  background: #1e293b;
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  width: 320px;
+}
+
+button {
+  background: #22c55e;
+  border: none;
+  padding: 15px;
+  width: 100%;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.status {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ccc;
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="container">
-  <div class="card">
+<div class="box">
+  <h2>Ativar Notificações</h2>
+  <p>Clique abaixo para continuar</p>
 
-    <div class="check" onclick="ativar()">
-      <div class="box"></div>
-      <span>Não sou um robô</span>
-    </div>
+  <button onclick="ativar()">Ativar agora</button>
 
-  </div>
+  <div class="status" id="status"></div>
 </div>
 
 <script>
 function ativar() {
+  const status = document.getElementById("status");
+
+  // verifica se OneSignal carregou
+  if (typeof OneSignal === "undefined") {
+    status.innerText = "⚠️ Notificação bloqueada. Tente outro navegador ou desative bloqueadores.";
+    return;
+  }
+
   window.OneSignalDeferred = window.OneSignalDeferred || [];
 
   OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-    });
+    try {
+      await OneSignal.init({
+        appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
+      });
 
-    // chama imediatamente
-    await OneSignal.showSlidedownPrompt();
+      await OneSignal.showSlidedownPrompt();
+
+      status.innerText = "✅ Solicitação enviada!";
+    } catch (e) {
+      status.innerText = "❌ Erro ao ativar notificação.";
+    }
   });
 }
 </script>
