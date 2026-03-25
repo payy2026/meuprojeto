@@ -1,18 +1,38 @@
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 <script>
-async function initPush() {
-  const OneSignal = window.OneSignal;
+window.OneSignalDeferred = window.OneSignalDeferred || [];
+
+OneSignalDeferred.push(async function(OneSignal) {
 
   await OneSignal.init({
     appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
     serviceWorkerPath: "/OneSignalSDKWorker.js",
-    serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js",
-    serviceWorkerParam: { scope: "/" }
+    serviceWorkerUpdaterPath: "/OneSignalSDKUpdaterWorker.js"
   });
 
-  console.log("✅ OneSignal inicializado");
-}
+  // 👉 FUNÇÃO DO BOTÃO
+  window.ativarPush = async function() {
 
-window.addEventListener("load", initPush);
+    try {
+      // 🔔 pede permissão
+      await OneSignal.Notifications.requestPermission();
+
+      // 🔥 força inscrição (ESSENCIAL)
+      await OneSignal.User.PushSubscription.optIn();
+
+      if (Notification.permission === "granted") {
+        alert("✅ Notificações ativadas!");
+      } else {
+        alert("❌ Permissão negada");
+      }
+
+    } catch (e) {
+      console.error(e);
+      alert("Erro ao ativar");
+    }
+
+  };
+
+});
 </script>
