@@ -7,82 +7,81 @@
 <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0f172a;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  height:100vh;
 }
-
-.box {
-  background: #1e293b;
-  padding: 30px;
-  border-radius: 10px;
-  text-align: center;
-  width: 320px;
+.card{
+  background:#1e293b;
+  padding:30px;
+  border-radius:12px;
+  width:320px;
+  text-align:center;
+  box-shadow:0 8px 25px rgba(0,0,0,.3);
 }
-
-button {
-  background: #22c55e;
-  border: none;
-  padding: 15px;
-  width: 100%;
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  border-radius: 5px;
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:8px;
+  background:#22c55e;
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
 }
-
-.status {
-  margin-top: 15px;
-  font-size: 14px;
-  color: #ccc;
+.status{
+  margin-top:12px;
+  font-size:14px;
+  color:#cbd5e1;
 }
 </style>
 </head>
 
 <body>
-
-<div class="box">
-  <h2>Ativar Notificações</h2>
-  <p>Clique abaixo para continuar</p>
-
+<div class="card">
+  <h2>Ativar notificações</h2>
+  <p>Clique para continuar</p>
   <button onclick="ativar()">Ativar agora</button>
-
   <div class="status" id="status"></div>
 </div>
 
 <script>
-function ativar() {
+function ativar(){
   const status = document.getElementById("status");
+  status.innerText = "Solicitando permissão...";
 
-  // verifica se OneSignal carregou
-  if (typeof OneSignal === "undefined") {
-    status.innerText = "⚠️ Notificação bloqueada. Tente outro navegador ou desative bloqueadores.";
+  if (!("Notification" in window)) {
+    status.innerText = "Seu navegador não suporta notificações.";
     return;
   }
 
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-  OneSignalDeferred.push(async function(OneSignal) {
-    try {
+  OneSignalDeferred.push(async function(OneSignal){
+    try{
       await OneSignal.init({
         appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
       });
 
       await OneSignal.showSlidedownPrompt();
 
-      status.innerText = "✅ Solicitação enviada!";
-    } catch (e) {
-      status.innerText = "❌ Erro ao ativar notificação.";
+      // feedback simples
+      Notification.requestPermission().then(p => {
+        if (p === "granted") status.innerText = "Permissão concedida ✔";
+        else if (p === "denied") status.innerText = "Permissão bloqueada ❌";
+        else status.innerText = "Permissão não definida";
+      });
+
+    }catch(e){
+      status.innerText = "Erro ao iniciar notificações.";
     }
   });
 }
 </script>
-
 </body>
 </html>
