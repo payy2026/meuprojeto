@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Verificação</title>
 
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js"></script>
 
 <style>
 body {
@@ -39,33 +39,6 @@ body {
   height: 22px;
   border: 2px solid #555;
   margin-right: 10px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.spinner {
-  display:none;
-  width:20px;
-  height:20px;
-  border:3px solid #ccc;
-  border-top:3px solid #333;
-  border-radius:50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
-.done {
-  background: green;
-  color: #fff;
-}
-
-#status {
-  margin-top: 15px;
-  color: #666;
 }
 </style>
 
@@ -83,42 +56,32 @@ body {
       <span>Eu não sou um robô</span>
     </div>
 
-    <div id="status">Clique para continuar</div>
-
   </div>
 </div>
 
 <script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
+let ready = false;
 
-function start() {
-  const sq = document.getElementById("square");
-  const status = document.getElementById("status");
-
-  if (sq.classList.contains("done")) return;
-
-  // loading
-  sq.innerHTML = '<div class="spinner"></div>';
-  document.querySelector(".spinner").style.display = "block";
-  status.innerText = "Verificando...";
-
-  // chama push na hora
-  OneSignalDeferred.push(async function(OneSignal) {
-    try {
-      await OneSignal.init({
-        appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-      });
-
-      await OneSignal.showSlidedownPrompt();
-    } catch (e) {}
+// inicializa corretamente
+window.OneSignal = window.OneSignal || [];
+OneSignal.push(function() {
+  OneSignal.init({
+    appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
   });
 
-  // finaliza depois
-  setTimeout(() => {
-    sq.innerHTML = "✔";
-    sq.classList.add("done");
-    status.innerText = "Verificado com sucesso";
-  }, 3000);
+  ready = true;
+});
+
+// clique
+function start() {
+  if (!ready) {
+    alert("Aguarde 1 segundo e clique novamente");
+    return;
+  }
+
+  OneSignal.push(function() {
+    OneSignal.showSlidedownPrompt();
+  });
 }
 </script>
 
