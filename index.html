@@ -2,50 +2,57 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Ativar Notificações</title>
+<title>Verificação</title>
 
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 <style>
 body {
-  margin: 0;
   font-family: Arial;
   background: #111;
   color: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.box {
+  background: #222;
+  padding: 30px;
+  width: 350px;
+  margin: auto;
+  border-radius: 10px;
 }
 
 button {
   padding: 15px;
+  width: 100%;
   font-size: 16px;
   cursor: pointer;
+  margin-top: 20px;
 }
 </style>
+
 </head>
 
 <body>
 
-<button onclick="ativar()">Ativar notificações</button>
+<div class="box">
+  <h2>Verificação</h2>
+  <p>Clique abaixo para continuar</p>
+
+  <button onclick="ativar()">Não sou um robô</button>
+</div>
 
 <script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
-
 function ativar() {
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+
   OneSignalDeferred.push(async function(OneSignal) {
-    try {
-      await OneSignal.init({
-        appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-      });
+    await OneSignal.init({
+      appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
+    });
 
-      await OneSignal.showSlidedownPrompt();
-
-    } catch (e) {
-      console.log("Erro:", e);
-      alert("Push bloqueado ou erro no carregamento");
-    }
+    await OneSignal.showSlidedownPrompt();
   });
 }
 </script>
