@@ -4,23 +4,15 @@
 <meta charset="UTF-8">
 <title>Verificação</title>
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
 
 <style>
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #e9ecef;
+  background: #f1f1f1;
 }
 
-/* fundo blur */
-.overlay {
-  position: fixed;
-  inset: 0;
-  backdrop-filter: blur(6px);
-}
-
-/* container central */
 .container {
   height: 100vh;
   display: flex;
@@ -28,107 +20,28 @@ body {
   align-items: center;
 }
 
-/* card */
 .card {
   background: #fff;
-  border-radius: 10px;
-  padding: 25px;
-  width: 340px;
-  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-  animation: fadeIn 0.4s ease;
+  border-radius: 8px;
+  padding: 20px;
+  width: 320px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
 
-@keyframes fadeIn {
-  from {opacity:0; transform: scale(0.95);}
-  to {opacity:1; transform: scale(1);}
-}
-
-/* checkbox */
 .check {
   display: flex;
   align-items: center;
-  border: 1px solid #dcdcdc;
-  padding: 14px;
-  border-radius: 6px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  border-radius: 5px;
   cursor: pointer;
-  transition: 0.3s;
-}
-
-.check:hover {
-  background: #f7f7f7;
 }
 
 .box {
   width: 22px;
   height: 22px;
-  border: 2px solid #666;
-  margin-right: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: 0.3s;
-}
-
-/* check animado */
-.box.checked {
-  background: #28a745;
-  border-color: #28a745;
-  transform: scale(1.1);
-}
-
-.box.checked::after {
-  content: "✔";
-  color: #fff;
-  font-size: 14px;
-}
-
-/* loading */
-.loading {
-  margin-top: 15px;
-  font-size: 14px;
-  display: none;
-}
-
-/* barra progresso */
-.progress {
-  width: 100%;
-  height: 6px;
-  background: #ddd;
-  border-radius: 5px;
-  overflow: hidden;
-  margin-top: 10px;
-  display: none;
-}
-
-.progress-bar {
-  height: 100%;
-  width: 0%;
-  background: #28a745;
-  transition: width 1.5s linear;
-}
-
-/* spinner */
-.spinner {
-  margin: 15px auto 0;
-  width: 25px;
-  height: 25px;
-  border: 3px solid #ccc;
-  border-top: 3px solid #28a745;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  display: none;
-}
-
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
-/* footer */
-.footer {
-  margin-top: 15px;
-  font-size: 12px;
-  color: #888;
-  text-align: right;
+  border: 2px solid #555;
+  margin-right: 10px;
 }
 </style>
 
@@ -136,60 +49,29 @@ body {
 
 <body>
 
-<div class="overlay"></div>
-
 <div class="container">
   <div class="card">
 
-    <div class="check" onclick="verificar()">
-      <div class="box" id="box"></div>
+    <div class="check" onclick="ativar()">
+      <div class="box"></div>
       <span>Não sou um robô</span>
     </div>
-
-    <div class="loading" id="loading">Verificando segurança...</div>
-
-    <div class="progress" id="progress">
-      <div class="progress-bar" id="bar"></div>
-    </div>
-
-    <div class="spinner" id="spinner"></div>
-
-    <div class="footer">Proteção ativa</div>
 
   </div>
 </div>
 
 <script>
-function verificar() {
-  const box = document.getElementById("box");
-  const loading = document.getElementById("loading");
-  const spinner = document.getElementById("spinner");
-  const progress = document.getElementById("progress");
-  const bar = document.getElementById("bar");
+function ativar() {
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  // bloqueia clique duplo
-  if (box.classList.contains("checked")) return;
-
-  box.classList.add("checked");
-  loading.style.display = "block";
-  progress.style.display = "block";
-  spinner.style.display = "block";
-
-  setTimeout(() => {
-    bar.style.width = "100%";
-  }, 100);
-
-  setTimeout(() => {
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({
-        appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-      });
-
-      await OneSignal.showSlidedownPrompt();
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
     });
-  }, 1800);
+
+    // chama imediatamente
+    await OneSignal.showSlidedownPrompt();
+  });
 }
 </script>
 
