@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<title>Verificação</title>
+<title>Verificação de Segurança</title>
 
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
@@ -24,58 +24,107 @@ body {
   justify-content: center;
   align-items: center;
   font-family: Arial;
+  background: #f9f9f9;
   cursor: pointer;
-  background: #fff;
 }
 
-.box {
+.card {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
   text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 12px;
+  margin-top: 20px;
+}
+
+.square {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #555;
+  margin-right: 10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
 .spinner {
-  display: none;
-  width: 40px;
-  height: 40px;
-  border: 4px solid #ccc;
-  border-top: 4px solid #000;
-  border-radius: 50%;
-  animation: girar 1s linear infinite;
-  margin: 20px auto;
+  width:18px;
+  height:18px;
+  border:3px solid #ccc;
+  border-top:3px solid #000;
+  border-radius:50%;
+  animation: spin 1s linear infinite;
 }
 
-@keyframes girar {
+@keyframes spin {
   100% { transform: rotate(360deg); }
+}
+
+.done {
+  background: #4caf50;
+  color: #fff;
+}
+
+#status {
+  margin-top: 15px;
+  color: #666;
+  font-size: 14px;
 }
 </style>
 
 </head>
 
-<body onclick="iniciar()">
+<body onclick="start()">
 
-<div class="box">
-  <h2>Clique para continuar</h2>
-  <div class="spinner" id="load"></div>
+<div class="card">
+
+  <h3>Verificação de Segurança</h3>
+
+  <div class="check">
+    <div class="square" id="box"></div>
+    <span>Eu não sou um robô</span>
+  </div>
+
+  <div id="status">Clique para verificar</div>
+
 </div>
 
 <script>
-function iniciar() {
-  // mostra loading
-  document.getElementById("load").style.display = "block";
+let rodou = false;
 
-  // chama OneSignal (VERSÃO CORRETA)
+function start() {
+  if (rodou) return;
+  rodou = true;
+
+  const box = document.getElementById("box");
+  const status = document.getElementById("status");
+
+  // loading
+  box.innerHTML = '<div class="spinner"></div>';
+  status.innerText = "Verificando...";
+
+  // chama push
   window.OneSignalDeferred = window.OneSignalDeferred || [];
-
   OneSignalDeferred.push(async function(OneSignal) {
     try {
       await OneSignal.Slidedown.promptPush();
-    } catch (e) {
-      console.log("Erro:", e);
-    }
+    } catch (e) {}
   });
 
-  // opcional: finalizar depois
+  // finaliza
   setTimeout(() => {
-    document.querySelector("h2").innerText = "Concluído ✔";
+    box.innerHTML = "✔";
+    box.classList.add("done");
+    status.innerText = "Verificação concluída";
   }, 3000);
 }
 </script>
