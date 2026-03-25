@@ -1,55 +1,49 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Push Simples</title>
+  <meta charset="UTF-8">
+  <title>Notificações Push</title>
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <!-- OneSignal SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-<script>
-window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
 
-OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.init({
-    appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
-  });
-});
-</script>
+      // 1. Inicializar
+      await OneSignal.init({
+        appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
+      });
 
-<style>
-body {
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  font-family:Arial;
-}
-button {
-  padding:15px;
-  font-size:18px;
-  cursor:pointer;
-}
-</style>
+      // 2. Pedir permissão ao usuário
+      await OneSignal.Slidedown.promptPush();
 
+      // 3. Verificar se está inscrito
+      const isSubscribed = await OneSignal.User.PushSubscription.optedIn;
+      console.log("Inscrito:", isSubscribed);
+
+      // 4. Pegar o ID do usuário (para enviar notificação individual)
+      const userId = await OneSignal.User.PushSubscription.id;
+      console.log("Player ID:", userId);
+
+    });
+  </script>
 </head>
-
 <body>
 
-<button onclick="ativar()">Ativar Notificação</button>
+  <h1>Minha Aplicação</h1>
 
-<script>
-function ativar() {
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  <!-- Botão para pedir permissão manualmente -->
+  <button onclick="ativarNotificacoes()">🔔 Ativar Notificações</button>
 
-  OneSignalDeferred.push(async function(OneSignal) {
-    try {
-      await OneSignal.Slidedown.promptPush();
-    } catch (e) {
-      console.log(e);
+  <script>
+    function ativarNotificacoes() {
+      OneSignalDeferred.push(function(OneSignal) {
+        OneSignal.Slidedown.promptPush();
+      });
     }
-  });
-}
-</script>
+  </script>
 
 </body>
 </html>
