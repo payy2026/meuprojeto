@@ -7,81 +7,48 @@
 <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" defer></script>
 
 <style>
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#0f172a;
-  color:#fff;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  height:100vh;
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #111;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
-.card{
-  background:#1e293b;
-  padding:30px;
-  border-radius:12px;
-  width:320px;
-  text-align:center;
-  box-shadow:0 8px 25px rgba(0,0,0,.3);
-}
-button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:8px;
-  background:#22c55e;
-  color:#fff;
-  font-size:16px;
-  cursor:pointer;
-}
-.status{
-  margin-top:12px;
-  font-size:14px;
-  color:#cbd5e1;
+
+button {
+  padding: 15px;
+  font-size: 16px;
+  cursor: pointer;
 }
 </style>
 </head>
 
 <body>
-<div class="card">
-  <h2>Ativar notificações</h2>
-  <p>Clique para continuar</p>
-  <button onclick="ativar()">Ativar agora</button>
-  <div class="status" id="status"></div>
-</div>
+
+<button onclick="ativar()">Ativar notificações</button>
 
 <script>
-function ativar(){
-  const status = document.getElementById("status");
-  status.innerText = "Solicitando permissão...";
+window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-  if (!("Notification" in window)) {
-    status.innerText = "Seu navegador não suporta notificações.";
-    return;
-  }
-
-  window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal){
-    try{
+function ativar() {
+  OneSignalDeferred.push(async function(OneSignal) {
+    try {
       await OneSignal.init({
         appId: "2ea63444-e895-4836-b5e6-b739ca029d8f",
       });
 
       await OneSignal.showSlidedownPrompt();
 
-      // feedback simples
-      Notification.requestPermission().then(p => {
-        if (p === "granted") status.innerText = "Permissão concedida ✔";
-        else if (p === "denied") status.innerText = "Permissão bloqueada ❌";
-        else status.innerText = "Permissão não definida";
-      });
-
-    }catch(e){
-      status.innerText = "Erro ao iniciar notificações.";
+    } catch (e) {
+      console.log("Erro:", e);
+      alert("Push bloqueado ou erro no carregamento");
     }
   });
 }
 </script>
+
 </body>
 </html>
